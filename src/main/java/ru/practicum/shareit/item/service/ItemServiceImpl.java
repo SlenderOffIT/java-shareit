@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> search(String text) {
-        log.debug("Обрабатываем запрос по поиску предметов с наличием фрагмента {}", text);
+        log.debug("Обрабатываем запрос по поиску предметов с наличием фрагмента {}.", text);
         return itemRepository.search(text);
     }
 }
