@@ -5,7 +5,12 @@ public enum BookingStatusEnum {
     WAITING("WAITING"),
     APPROVED("APPROVED"),
     REJECTED("REJECTED"),
-    CANCELED("CANCELED");
+    CANCELED("CANCELED"),
+    CURRENT("CURRENT"),
+    PAST("PAST"),
+    ALL("ALL"),
+    FUTURE("FUTURE"),
+    UNSUPPORTED_STATUS("UNSUPPORTED_STATUS");
 
     private String value;
 

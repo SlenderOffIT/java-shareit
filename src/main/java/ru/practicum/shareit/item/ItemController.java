@@ -3,7 +3,10 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.comment.CommentDto;
+import ru.practicum.shareit.item.dto.comment.CommentDtoJson;
+import ru.practicum.shareit.item.dto.item.ItemDto;
+import ru.practicum.shareit.item.dto.item.ItemDtoResponse;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -17,15 +20,15 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") int idUser) {
+    public List<ItemDtoResponse> getAllItem(@RequestHeader("X-Sharer-User-Id") int idUser) {
         log.debug("Поступил запрос на просмотр всех предметов пользователя с id {}.", idUser);
         return itemService.getAllItems(idUser);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable int itemId) {
+    public ItemDtoResponse getItemById(@RequestHeader("X-Sharer-User-Id") int idUser, @PathVariable int itemId) {
         log.debug("Поступил запрос на просмотр предмета с id {}.", itemId);
-        return itemService.getItemById(itemId);
+        return itemService.getItemById(itemId, idUser);
     }
 
     @PostMapping
@@ -52,5 +55,12 @@ public class ItemController {
     public List<ItemDto> search(@RequestParam("text") String text) {
         log.debug("Поступил запрос по поиску предметов с наличием фрагмента {}", text);
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto postComment(@RequestBody CommentDtoJson comment,
+                                  @RequestHeader("X-Sharer-User-Id") int idUser, @PathVariable int itemId) {
+        log.debug("Поступил запрос на добавление комментария к предмету с id {}", itemId);
+        return itemService.postComment(comment, idUser, itemId);
     }
 }

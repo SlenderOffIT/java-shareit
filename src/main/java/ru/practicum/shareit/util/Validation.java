@@ -1,12 +1,12 @@
 package ru.practicum.shareit.util;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.shareit.exception.ItemNotFoundException;
+import ru.practicum.shareit.booking.dto.BookingDtoJson;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.item.dto.item.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,11 +28,7 @@ public class Validation {
         }
     }
 
-    public static void validate(final ItemDto itemDto, final int idUser, UserRepository userRepository) {
-        if (!userRepository.userIsExist(idUser)) {
-            log.debug("Такого пользователя с id {} не существует.", idUser);
-            throw new ItemNotFoundException("Такого пользователя не существует.");
-        }
+    public static void validate(final ItemDto itemDto) {
         if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
             log.debug("Поступил предмет на создание без названия.");
             throw new ValidationException("У предмета должно быть название.");
@@ -44,6 +40,34 @@ public class Validation {
         if (itemDto.getAvailable() == null) {
             log.debug("Поступил предмет на создание без описания наличия.");
             throw new ValidationException("У предмета должно быть указано наличие.");
+        }
+    }
+
+    public static void validate(final BookingDtoJson bookingDto) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        if (bookingDto.getStart() == null) {
+            log.debug("Время старта бронирования не должно быть null.");
+            throw new ValidationException("Время старта бронирования не должно быть null.");
+        }
+        if (bookingDto.getEnd() == null) {
+            log.debug("Время окончания бронирования не должно быть null.");
+            throw new ValidationException("Время окончания бронирования не должно быть null.");
+        }
+        if (bookingDto.getStart().isBefore(currentDateTime)) {
+            log.debug("Время старта бронирования не должно быть в прошлом");
+            throw new ValidationException("Время старта бронирования не должно быть в прошлом");
+        }
+        if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
+            log.debug("Время окончания бронирования не должно быть раньше старта.");
+            throw new ValidationException("Время окончания бронирования не должно быть раньше старта.");
+        }
+        if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+            log.debug("Время старта бронирования не должно быть раньше окончания.");
+            throw new ValidationException("Время старта бронирования не должно быть раньше окончания.");
+        }
+        if (bookingDto.getEnd().isBefore(currentDateTime)) {
+            log.debug("Время окончания бронирования не должно быть в прошлом.");
+            throw new ValidationException("Время окончания бронирования не должно быть в прошлом.");
         }
     }
 }
