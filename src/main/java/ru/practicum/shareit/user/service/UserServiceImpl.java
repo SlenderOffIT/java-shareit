@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.user.dto.MapperUserDto.toUser;
 import static ru.practicum.shareit.user.dto.MapperUserDto.toUserDto;
+import static ru.practicum.shareit.util.Constant.NOT_FOUND_USER;
 import static ru.practicum.shareit.util.Validation.validate;
 
 @Slf4j
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Обрабатываем запрос на просмотр пользователя с id {}.", id);
 
         if (!userRepository.existsById(id)) {
-            log.debug("Пользователя с таким id {} не существует.", id);
+            log.warn(NOT_FOUND_USER, id);
             throw new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", id));
         }
         return toUserDto(userRepository.getReferenceById(id));
@@ -54,11 +55,9 @@ public class UserServiceImpl implements UserService {
         try {
             user = userRepository.save(toUser(userDto));
         } catch (Throwable e) {
-            log.debug("Пользователь с таким email {} уже существует", userDto.getEmail());
+            log.warn("Пользователь с таким email {} уже существует", userDto.getEmail());
             throw new DataIntegrityViolationException(String.format("Пользователь с таким email %s уже существует", userDto.getEmail()));
         }
-//        User user = toUser(userDto);
-//        return toUserDto(userRepository.save(user));
         return toUserDto(user);
     }
 
@@ -85,7 +84,7 @@ public class UserServiceImpl implements UserService {
             }
             return toUserDto(userRepository.save(userUpdate));
         } else {
-            log.debug("Пользователя с таким id {} не существует.", id);
+            log.warn(NOT_FOUND_USER, id);
             throw new UserNotFoundException(String.format("С таким id %d пользователя не существует.", id));
         }
     }

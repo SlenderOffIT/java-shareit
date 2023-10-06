@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.shareit.booking.dto.MapperBookingDto.*;
+import static ru.practicum.shareit.util.Constant.*;
 import static ru.practicum.shareit.util.Validation.validate;
 
 @Service
@@ -55,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.debug("Пользователя с таким id {} не существует.", idUser);
+                    log.warn(NOT_FOUND_USER, idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
         User user = userRepository.getReferenceById(idUser);
@@ -71,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
-                    log.debug("Бронирования с id {} не существует.", bookingId);
+                    log.warn(NOT_FOUND_BOOKING, bookingId);
                     return new BookingNotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
                 });
 
@@ -91,29 +92,29 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.debug("Пользователя с таким id {} не существует.", idUser);
+                    log.warn(NOT_FOUND_USER, idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
 
         switch (state) {
             case ALL:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByBookerId(idUser));
             case PAST:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByEndIsBeforeAndBookerId(localDateTime, idUser));
             case FUTURE:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByStartIsAfterAndBookerId(localDateTime, idUser));
             case CURRENT:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(idUser, localDateTime, localDateTime));
             case WAITING:
             case REJECTED:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByStatusAndBookerId(state, idUser));
         }
-        log.debug("Не верный статус бронирования {}", state);
+        log.warn("Не верный статус бронирования {}", state);
         throw new BookingBadRequest(String.format("Unknown state: %s", state));
     }
 
@@ -123,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
-                    log.debug("Бронирования с id {} не существует.", bookingId);
+                    log.warn(NOT_FOUND_BOOKING, bookingId);
                     return new BookingNotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
                 });
 
@@ -163,30 +164,30 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.debug("Пользователя с таким id {} не существует.", idUser);
+                    log.warn(NOT_FOUND_USER, idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
 
         switch (state) {
             case ALL:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findAllBookingByOwnerId(idUser));
             case PAST:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndEndIsBefore(idUser, localDateTime));
             case FUTURE:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndEndIsAfter(idUser, localDateTime));
             case CURRENT:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(idUser, localDateTime, localDateTime));
             case WAITING:
             case REJECTED:
-                log.debug("Выводим список бронирований со статусом бронирования {}.", state);
+                log.debug(LOG_LIST_STATUS, state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndStatus(idUser, state));
         }
 
-        log.debug("Не верный статус бронирования {}", state);
+        log.warn("Не верный статус бронирования {}", state);
         throw new BookingBadRequest(String.format("Unknown state: %s", state));
     }
 }

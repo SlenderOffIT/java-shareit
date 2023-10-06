@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.util.Constant.SHARER_USER;
+
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -20,33 +22,33 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public List<ItemDtoResponse> getAllItem(@RequestHeader("X-Sharer-User-Id") int idUser) {
+    public List<ItemDtoResponse> getAllItem(@RequestHeader(SHARER_USER) int idUser) {
         log.debug("Поступил запрос на просмотр всех предметов пользователя с id {}.", idUser);
         return itemService.getAllItems(idUser);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoResponse getItemById(@RequestHeader("X-Sharer-User-Id") int idUser, @PathVariable int itemId) {
+    public ItemDtoResponse getItemById(@RequestHeader(SHARER_USER) int idUser, @PathVariable int itemId) {
         log.debug("Поступил запрос на просмотр предмета с id {}.", itemId);
         return itemService.getItemById(itemId, idUser);
     }
 
     @PostMapping
-    public ItemDto post(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int idUser) {
+    public ItemDto post(@RequestBody ItemDto itemDto, @RequestHeader(SHARER_USER) int idUser) {
         log.debug("Поступил запрос на добавление предмета с названием {}.", itemDto.getName());
         return itemService.postItem(itemDto, idUser);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") int idUser,
+                          @RequestHeader(SHARER_USER) int idUser,
                           @PathVariable int itemId) {
         log.debug("Поступил запрос на обновление предмета с id {}.", itemId);
         return itemService.update(itemDto, itemId, idUser);
     }
 
     @DeleteMapping("/{itemId}")
-    public void delete(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
+    public void delete(@PathVariable int itemId, @RequestHeader(SHARER_USER) int userId) {
         log.debug("Поступил запрос на удаление предмета с id {}.", itemId);
         itemService.delete(itemId, userId);
     }
@@ -59,7 +61,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto postComment(@RequestBody CommentDtoJson comment,
-                                  @RequestHeader("X-Sharer-User-Id") int idUser, @PathVariable int itemId) {
+                                  @RequestHeader(SHARER_USER) int idUser, @PathVariable int itemId) {
         log.debug("Поступил запрос на добавление комментария к предмету с id {}", itemId);
         return itemService.postComment(comment, idUser, itemId);
     }

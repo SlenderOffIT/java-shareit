@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingStatusEnum;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.practicum.shareit.booking.dto.MapperBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BookingBadRequest;
@@ -24,16 +25,15 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.dto.MapperBookingDto.toBookingDtoResponse;
 import static ru.practicum.shareit.item.dto.comment.MapperCommentDto.toComment;
 import static ru.practicum.shareit.item.dto.comment.MapperCommentDto.toCommentDto;
 import static ru.practicum.shareit.item.dto.item.MapperItemDto.*;
+import static ru.practicum.shareit.util.Constant.NOT_FOUND_ITEM;
+import static ru.practicum.shareit.util.Constant.NOT_FOUND_USER;
 import static ru.practicum.shareit.util.Validation.validate;
 
 @Slf4j
@@ -50,19 +50,13 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDtoResponse> getAllItems(int idUser) {
         log.debug("Обрабатываем запрос на просмотр списка всех предметов пользователя с id {}.", idUser);
 
-        List<ItemDtoResponse> items = itemRepository.findAllByOwnerId(idUser).stream()
+        return itemRepository.findAllByOwnerId(idUser).stream()
                 .map(MapperItemDto::toItemResponse)
+                .map(this::addComments)
+                .map(this::addLastAndNextBooking)
                 .sorted(Comparator.comparing(ItemDtoResponse::getId))
                 .collect(Collectors.toList());
-
-        items.forEach(itemDtoResponse -> {
-            itemDtoResponse.setLastBooking(getLastBooking(itemDtoResponse.getId(), idUser));
-            itemDtoResponse.setNextBooking(getNextBooking(itemDtoResponse.getId(), idUser));
-        });
-
-        return items;
     }
-
 
     @Override
     public ItemDtoResponse getItemById(int idItem, int idUser) {
@@ -112,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemOptional.isPresent()) {
             Item item = itemOptional.get();
             if (item.getOwner().getId() != idUser) {
-                log.debug("Пользователь с id {} пытается изменить не свой предмет с id {}.", idUser, idItem);
+                log.warn("Пользователь с id {} пытается изменить не свой предмет с id {}.", idUser, idItem);
                 throw new ItemNotFoundException("Вы не являетесь владельцем данного предмета.");
             }
             if (itemDto.getName() != null) {
@@ -127,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
             item.setId(idItem);
             return toItemDto(itemRepository.save(item));
         } else {
-            log.debug("Предмета с id {} не существует", idItem);
+            log.warn(NOT_FOUND_ITEM, idItem);
             throw new ItemNotFoundException(String.format("Предмета с id %d не существует", idItem));
         }
     }
@@ -184,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
     private Item exceptionIfNotItem(int itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> {
-                    log.debug("Предмета с id {} не существует", itemId);
+                    log.warn(NOT_FOUND_ITEM, itemId);
                     return new ItemNotFoundException(String.format("Предмета с id %d не существует", itemId));
                 });
     }
@@ -192,18 +186,43 @@ public class ItemServiceImpl implements ItemService {
     private User exceptionIfNotUser(int idUser) {
         return userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.debug("Пользователя с таким id {} не существует.", idUser);
+                    log.warn(NOT_FOUND_USER, idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
     }
 
-    private BookingDtoResponse getLastBooking(int itemId, int userId) {
-        List<Booking> bookingList = bookingRepository.findLastBookingByOwnerId(itemId, userId, BookingStatusEnum.REJECTED, LocalDateTime.now());
-        return bookingList.isEmpty() ? null : toBookingDtoResponse(bookingList.get(0));
+    private ItemDtoResponse addLastAndNextBooking(ItemDtoResponse item) {
+
+        List<Booking> bookings = bookingRepository.findAllByItemIdAndStatusNot(item.getId(), BookingStatusEnum.REJECTED);
+
+        BookingDtoResponse lastBooking = bookings.stream()
+                .map(MapperBookingDto::toBookingDtoResponse)
+                .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                .max(Comparator.comparing(BookingDtoResponse::getStart))
+                .orElse(null);
+
+        BookingDtoResponse nextBooking = bookings.stream()
+                .map(MapperBookingDto::toBookingDtoResponse)
+                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                .min(Comparator.comparing(BookingDtoResponse::getStart))
+                .orElse(null);
+
+        if (lastBooking != null) item.setLastBooking(lastBooking);
+        if (nextBooking != null) item.setNextBooking(nextBooking);
+        return item;
     }
 
-    private BookingDtoResponse getNextBooking(int itemId, int userId) {
-        List<Booking> bookingList = bookingRepository.findNextBookingByOwnerId(itemId, userId, BookingStatusEnum.REJECTED, LocalDateTime.now());
-        return bookingList.isEmpty() ? null : toBookingDtoResponse(bookingList.get(0));
+    private ItemDtoResponse addComments(ItemDtoResponse item) {
+
+        List<CommentDto> listComment = commentRepository.findByItemId(item.getId()).stream()
+                .map(MapperCommentDto::toCommentDto)
+                .collect(Collectors.toList());
+
+        if (listComment.isEmpty()) {
+            item.setComments(new ArrayList<>());
+        } else {
+            item.setComments(listComment);
+        }
+        return item;
     }
 }

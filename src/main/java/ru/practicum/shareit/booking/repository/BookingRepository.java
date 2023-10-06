@@ -42,4 +42,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findNextBookingByOwnerId(int itemId, int bookerId, BookingStatusEnum statusBooking, LocalDateTime currentTime);
 
     boolean existsByBookerIdAndItem_IdAndStatusAndEndBefore(int bookerId, int itemId, BookingStatusEnum status, LocalDateTime currentTime);
+
+    List<Booking> findAllByItemIdAndStatusNot(int itemId, BookingStatusEnum state);
 }
