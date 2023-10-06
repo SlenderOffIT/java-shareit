@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.util.Constant;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,7 +57,7 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_USER, idUser);
+                    log.warn(Constant.NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
         User user = userRepository.getReferenceById(idUser);
@@ -72,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_BOOKING, bookingId);
+                    log.warn(NOT_FOUND_BOOKING.getValue(), bookingId);
                     return new BookingNotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
                 });
 
@@ -92,26 +93,26 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_USER, idUser);
+                    log.warn(NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
 
         switch (state) {
             case ALL:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByBookerId(idUser));
             case PAST:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByEndIsBeforeAndBookerId(localDateTime, idUser));
             case FUTURE:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByStartIsAfterAndBookerId(localDateTime, idUser));
             case CURRENT:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(idUser, localDateTime, localDateTime));
             case WAITING:
             case REJECTED:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByStatusAndBookerId(state, idUser));
         }
         log.warn("Не верный статус бронирования {}", state);
@@ -124,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_BOOKING, bookingId);
+                    log.warn(NOT_FOUND_BOOKING.getValue(), bookingId);
                     return new BookingNotFoundException(String.format("Бронирования с id %d не существует.", bookingId));
                 });
 
@@ -164,26 +165,26 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_USER, idUser);
+                    log.warn(NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
 
         switch (state) {
             case ALL:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findAllBookingByOwnerId(idUser));
             case PAST:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndEndIsBefore(idUser, localDateTime));
             case FUTURE:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndEndIsAfter(idUser, localDateTime));
             case CURRENT:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(idUser, localDateTime, localDateTime));
             case WAITING:
             case REJECTED:
-                log.debug(LOG_LIST_STATUS, state);
+                log.debug(LOG_LIST_STATUS.getValue(), state);
                 return mappingListBookingByTime(bookingRepository.findByItem_Owner_IdAndStatus(idUser, state));
         }
 

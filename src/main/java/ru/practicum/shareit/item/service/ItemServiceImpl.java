@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
             item.setId(idItem);
             return toItemDto(itemRepository.save(item));
         } else {
-            log.warn(NOT_FOUND_ITEM, idItem);
+            log.warn(NOT_FOUND_ITEM.getValue(), idItem);
             throw new ItemNotFoundException(String.format("Предмета с id %d не существует", idItem));
         }
     }
@@ -178,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
     private Item exceptionIfNotItem(int itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_ITEM, itemId);
+                    log.warn(NOT_FOUND_ITEM.getValue(), itemId);
                     return new ItemNotFoundException(String.format("Предмета с id %d не существует", itemId));
                 });
     }
@@ -186,7 +186,7 @@ public class ItemServiceImpl implements ItemService {
     private User exceptionIfNotUser(int idUser) {
         return userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.warn(NOT_FOUND_USER, idUser);
+                    log.warn(NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
     }

@@ -11,18 +11,18 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
-import static ru.practicum.shareit.util.Constant.SHARER_USER;
-
 @Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 
+    private final static String SHARER_USER = "X-Sharer-User-Id";
+
     private ItemService itemService;
 
     @GetMapping
-    public List<ItemDtoResponse> getAllItem(@RequestHeader(SHARER_USER) int idUser) {
+    public List<ItemDtoResponse> getAllItem(@RequestHeader(value = SHARER_USER) int idUser) {
         log.debug("Поступил запрос на просмотр всех предметов пользователя с id {}.", idUser);
         return itemService.getAllItems(idUser);
     }

@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Обрабатываем запрос на просмотр пользователя с id {}.", id);
 
         if (!userRepository.existsById(id)) {
-            log.warn(NOT_FOUND_USER, id);
+            log.warn(NOT_FOUND_USER.getValue(), id);
             throw new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", id));
         }
         return toUserDto(userRepository.getReferenceById(id));
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             }
             return toUserDto(userRepository.save(userUpdate));
         } else {
-            log.warn(NOT_FOUND_USER, id);
+            log.warn(NOT_FOUND_USER.getValue(), id);
             throw new UserNotFoundException(String.format("С таким id %d пользователя не существует.", id));
         }
     }
