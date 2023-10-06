@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final static String SHARER_USER = "X-Sharer-User-Id";
+    private static final String SHARER_USER = "X-Sharer-User-Id";
 
     private ItemService itemService;
 
