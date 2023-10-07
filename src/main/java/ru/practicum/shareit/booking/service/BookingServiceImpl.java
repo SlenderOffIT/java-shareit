@@ -13,13 +13,16 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.util.Constant;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.shareit.booking.dto.MapperBookingDto.*;
-import static ru.practicum.shareit.util.Constant.*;
+import static ru.practicum.shareit.booking.dto.MapperBookingDto.mappingListBookingByTime;
+import static ru.practicum.shareit.booking.dto.MapperBookingDto.toBooking;
+import static ru.practicum.shareit.booking.dto.MapperBookingDto.toBookingDto;
+import static ru.practicum.shareit.util.Constant.LOG_LIST_STATUS;
+import static ru.practicum.shareit.util.Constant.NOT_FOUND_BOOKING;
+import static ru.practicum.shareit.util.Constant.NOT_FOUND_USER;
 import static ru.practicum.shareit.util.Validation.validate;
 
 @Service
@@ -57,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
 
         userRepository.findById(idUser)
                 .orElseThrow(() -> {
-                    log.warn(Constant.NOT_FOUND_USER.getValue(), idUser);
+                    log.warn(NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
         User user = userRepository.getReferenceById(idUser);
