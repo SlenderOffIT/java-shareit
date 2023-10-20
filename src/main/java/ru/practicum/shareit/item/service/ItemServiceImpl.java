@@ -21,6 +21,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.dto.item.ItemDto;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -47,6 +49,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public List<ItemDtoResponse> getAllItems(int idUser) {
@@ -135,6 +138,12 @@ public class ItemServiceImpl implements ItemService {
         validate(itemDto);
         User user = exceptionIfNotUser(idUser);
         Item item = toItem(itemDto);
+        if (itemDto.getRequestId() != null) {
+            ItemRequest request = requestRepository.getReferenceById(itemDto.getRequestId());
+            item.setRequest(request);
+        } else {
+            item.setRequest(null);
+        }
         item.setOwner(user);
         return toItemDto(itemRepository.save(item));
     }
@@ -171,7 +180,8 @@ public class ItemServiceImpl implements ItemService {
     public void delete(int idItem, int idUser) {
         log.debug("Обрабатываем запрос на удаление предмета с id {}.", idItem);
 
-        if (itemRepository.getReferenceById(idItem).getOwner().getId() != idUser) {
+        Item item = exceptionIfNotItem(idItem);
+        if (item.getOwner().getId() != idUser) {
             log.debug("Пользователь с id {} пытается удалить не свой предмет с id {}.", idUser, idItem);
             throw new ItemNotFoundException("Вы не являетесь владельцем данного предмета.");
         }

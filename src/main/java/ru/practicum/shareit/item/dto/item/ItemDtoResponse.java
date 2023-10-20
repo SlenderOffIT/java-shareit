@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto.item;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,6 @@ public class ItemDtoResponse {
     private String description;
     @NotNull
     private Boolean available;
-    @JsonIgnore
     private Integer request;
     private BookingDtoResponse lastBooking;
     private BookingDtoResponse nextBooking;

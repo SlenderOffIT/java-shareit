@@ -12,9 +12,9 @@ public interface BookingService {
 
     BookingDto getBookingById(int idUser, int bookingId);
 
-    List<BookingDto> getAllBookingsUser(BookingStatusEnum state, int idUser);
+    List<BookingDto> getAllBookingsUser(BookingStatusEnum state, int idUser, int from, int size);
 
     BookingDto patchApproved(Boolean approved, Integer bookingId, Integer idUser);
 
-    List<BookingDto> getListAllReservationUser(int idUser, BookingStatusEnum state);
+    List<BookingDto> getListAllReservationUser(int idUser, BookingStatusEnum state, int from, int size);
 }

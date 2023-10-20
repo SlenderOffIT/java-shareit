@@ -15,4 +15,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("select i from Item i where (lower(i.name) like lower(concat('%', ?1, '%')) " +
             "or lower(i.description) like lower(concat('%', ?1, '%'))) and is_available = true")
     List<Item> search(String text);
+
+    @Query("SELECT i FROM Item i WHERE i.request.id IN :requestIds")
+    List<Item> findAllByRequestIdIn(List<Integer> requestIds);
+
+    List<Item> findAllByRequestId(int requestId);
 }

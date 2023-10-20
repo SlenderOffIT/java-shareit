@@ -19,4 +19,10 @@ public class BookingDtoJson {
     private LocalDateTime start;
     @NotNull
     private LocalDateTime end;
+
+    public BookingDtoJson(int itemId, LocalDateTime start, LocalDateTime end) {
+        this.itemId = itemId;
+        this.start = start;
+        this.end = end;
+    }
 }
