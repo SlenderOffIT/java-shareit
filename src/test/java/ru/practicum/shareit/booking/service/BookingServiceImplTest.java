@@ -59,7 +59,7 @@ class BookingServiceImplTest {
     @Test
     public void postBookingMineItem() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
-        Item item = new Item( "item", "description", true, user);
+        Item item = new Item("item", "description", true, user);
         item.setId(1);
         BookingDtoJson bookingDtoJson = new BookingDtoJson(1, 1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1));
 
@@ -73,7 +73,7 @@ class BookingServiceImplTest {
     @Test
     public void postBookingNotIsAvailable() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
-        Item item = new Item( "item", "description", false, user);
+        Item item = new Item("item", "description", false, user);
         item.setId(1);
         BookingDtoJson bookingDtoJson = new BookingDtoJson(1, 1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1));
 
@@ -87,7 +87,7 @@ class BookingServiceImplTest {
     @Test
     public void postBookingNotUser() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
-        Item item = new Item( "item", "description", true, user);
+        Item item = new Item("item", "description", true, user);
         item.setId(1);
         BookingDtoJson bookingDtoJson = new BookingDtoJson(1, 1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1));
 
@@ -103,7 +103,7 @@ class BookingServiceImplTest {
     public void postBookingGood() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
         User user1 = new User(2, "Петя", "qsqwfgh@gmail.com");
-        Item item = new Item( "item", "description", true, user);
+        Item item = new Item("item", "description", true, user);
         item.setId(1);
         BookingDtoJson bookingDtoJson = new BookingDtoJson(1, 1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1));
         Booking booking = new Booking(1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1), item, user, WAITING);
@@ -130,7 +130,7 @@ class BookingServiceImplTest {
     @Test
     public void getBookingByIdGood() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
-        Item item = new Item( "item", "description", true, user);
+        Item item = new Item("item", "description", true, user);
         item.setId(1);
         Booking booking = new Booking(1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1), item, user, WAITING);
 
@@ -145,7 +145,7 @@ class BookingServiceImplTest {
     @Test
     public void getBookingByIdNotOwner() {
         User user = new User(1, "Вася", "asdfgh@gmail.com");
-        Item item = new Item( "item", "description", true, user);
+        Item item = new Item("item", "description", true, user);
         item.setId(1);
         Booking booking = new Booking(1, LocalDateTime.now().plusMinutes(12), LocalDateTime.now().plusHours(1), item, user, WAITING);
 
