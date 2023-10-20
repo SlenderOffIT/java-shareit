@@ -41,7 +41,7 @@ class BookingRepositoryTest {
     @BeforeEach
     public void before() {
         sort = Sort.by(Sort.Order.desc("start"));
-        pageable = PageRequest.of(0/10, 10, sort);
+        pageable = PageRequest.of(0 / 10, 10, sort);
         user = new User("Вася", "asdfgh@gmail.com");
         user2 = new User("Петя", "dfgh@gmail.com");
         user3 = new User("Ваня", "gggeeef@mail.ru");

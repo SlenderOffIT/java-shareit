@@ -48,7 +48,7 @@ class RequestRepositoryTest {
     @Test
     void findAllByRequesterIdNot() {
         Sort sort = Sort.by(Sort.Order.desc("created"));
-        Pageable pageable = PageRequest.of(0/10, 10, sort);
+        Pageable pageable = PageRequest.of(0 / 10, 10, sort);
 
         User user = new User("Вася", "asdfgh@gmail.com");
         User create = userRepository.save(user);

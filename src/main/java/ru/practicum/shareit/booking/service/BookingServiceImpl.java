@@ -100,7 +100,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Sort sort = Sort.by(Sort.Order.desc("start"));
-        Pageable pageable = PageRequest.of(from/size, size, sort);
+        Pageable pageable = PageRequest.of(from / size, size, sort);
         LocalDateTime localDateTime = LocalDateTime.now();
 
         exceptionIfNotUser(idUser);
@@ -183,7 +183,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Sort sort = Sort.by(Sort.Order.desc("start"));
-        Pageable pageable = PageRequest.of(from/size, size, sort);
+        Pageable pageable = PageRequest.of(from / size, size, sort);
         LocalDateTime localDateTime = LocalDateTime.now();
 
         exceptionIfNotUser(idUser);
