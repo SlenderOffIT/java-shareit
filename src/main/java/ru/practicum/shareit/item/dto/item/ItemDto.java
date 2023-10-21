@@ -18,10 +18,16 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
-    private Integer request;
+    private Integer requestId;
 
     public ItemDto(int id, String name, String description, boolean available) {
         this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
+
+    public ItemDto(String name, String description, Boolean available) {
         this.name = name;
         this.description = description;
         this.available = available;

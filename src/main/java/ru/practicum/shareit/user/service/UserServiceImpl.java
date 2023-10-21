@@ -40,11 +40,12 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(int id) {
         log.debug("Обрабатываем запрос на просмотр пользователя с id {}.", id);
 
-        if (!userRepository.existsById(id)) {
-            log.warn(NOT_FOUND_USER.getValue(), id);
-            throw new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", id));
-        }
-        return toUserDto(userRepository.getReferenceById(id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn(NOT_FOUND_USER.getValue(), id);
+                    return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", id));
+                });
+        return toUserDto(user);
     }
 
     @Override

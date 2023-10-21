@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -31,12 +32,20 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
-    @Column(name = "request")
-    private Integer request;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
     public Item(String name, String description, Boolean isAvailable) {
         this.name = name;
         this.description = description;
         this.isAvailable = isAvailable;
+    }
+
+    public Item(String name, String description, Boolean isAvailable, User owner) {
+        this.name = name;
+        this.description = description;
+        this.isAvailable = isAvailable;
+        this.owner = owner;
     }
 }

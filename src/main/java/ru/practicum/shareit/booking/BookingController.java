@@ -34,9 +34,11 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllBookingsUser(@RequestParam(defaultValue = "ALL") BookingStatusEnum state,
-                                               @RequestHeader(SHARER_USER) int idUser) {
+                                               @RequestHeader(SHARER_USER) int idUser,
+                                               @RequestParam(defaultValue = "0") int from,
+                                               @RequestParam(defaultValue = "10") int size) {
         log.debug("Поступил запрос на просмотр всех бронирований от арендатора со статусом {}", state);
-        return bookingService.getAllBookingsUser(state, idUser);
+        return bookingService.getAllBookingsUser(state, idUser, from, size);
     }
 
     @PatchMapping("/{bookingId}")
@@ -48,8 +50,10 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getListAllReservationUser(@RequestHeader(SHARER_USER) int idUser,
-                                                      @RequestParam(defaultValue = "ALL") BookingStatusEnum state) {
+                                                      @RequestParam(defaultValue = "ALL") BookingStatusEnum state,
+                                                      @RequestParam(defaultValue = "0") int from,
+                                                      @RequestParam(defaultValue = "10") int size) {
         log.debug("Поступил запрос на просмотр всех бронировании от владельца со статусом {}", state);
-        return bookingService.getListAllReservationUser(idUser, state);
+        return bookingService.getListAllReservationUser(idUser, state, from, size);
     }
 }
