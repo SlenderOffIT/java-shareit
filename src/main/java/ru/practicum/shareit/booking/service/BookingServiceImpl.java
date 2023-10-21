@@ -17,7 +17,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -94,10 +94,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookingsUser(BookingStatusEnum state, int idUser, int from, int size) {
         log.debug("Обрабатываем запрос на просмотр всех бронирований от арендатора со статусом {}", state);
 
-        if (from < 0 || size < 1) {
-            log.warn("Отрицательный параметр страницы.");
-            throw new ValidationException("Параметры страниц не могут быть отрицательными");
-        }
+        incorrectPageParameters(from, size);
 
         Sort sort = Sort.by(Sort.Order.desc("start"));
         Pageable pageable = PageRequest.of(from / size, size, sort);
@@ -177,10 +174,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getListAllReservationUser(int idUser, BookingStatusEnum state, int from, int size) {
         log.debug("Обрабатываем запрос на просмотр всех бронировании от владельца со статусом {}", state);
 
-        if (from < 0 || size < 1) {
-            log.warn("Отрицательный параметр страницы.");
-            throw new ValidationException("Параметры страниц не могут быть отрицательными");
-        }
+        incorrectPageParameters(from, size);
 
         Sort sort = Sort.by(Sort.Order.desc("start"));
         Pageable pageable = PageRequest.of(from / size, size, sort);
@@ -217,5 +211,12 @@ public class BookingServiceImpl implements BookingService {
                     log.warn(NOT_FOUND_USER.getValue(), idUser);
                     return new UserNotFoundException(String.format("Пользователя с таким id %d не существует.", idUser));
                 });
+    }
+
+    private void incorrectPageParameters(int from, int size) {
+        if (from < 0 || size < 1) {
+            log.warn("Отрицательный параметр страницы.");
+            throw new ValidationException("Параметры страниц не могут быть отрицательными");
+        }
     }
 }

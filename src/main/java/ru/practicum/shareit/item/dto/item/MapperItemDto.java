@@ -7,9 +7,10 @@ public class MapperItemDto {
         ItemDto itemDto = new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getIsAvailable());
         if (item.getRequest() != null) {
             itemDto.setRequestId(item.getRequest().getId());
-        } else {
-            itemDto.setRequestId(null);
         }
+//        } else {
+//            itemDto.setRequestId(null);
+//        }
         return itemDto;
     }
 
