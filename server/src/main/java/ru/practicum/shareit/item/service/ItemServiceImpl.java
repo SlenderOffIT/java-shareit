@@ -99,6 +99,7 @@ public class ItemServiceImpl implements ItemService {
 
                     return itemDtoResponse;
                 })
+                .sorted(Comparator.comparing(ItemDtoResponse::getId))
                 .collect(Collectors.toList());
     }
 
