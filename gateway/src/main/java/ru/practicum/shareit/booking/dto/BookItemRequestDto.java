@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookItemRequestDto {
-    private final static String PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
     private long itemId;
     @JsonFormat(pattern = PATTERN)
