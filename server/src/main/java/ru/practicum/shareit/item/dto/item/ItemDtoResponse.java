@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.item.dto.comment.CommentDto;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,13 +13,9 @@ import java.util.List;
 @Data
 public class ItemDtoResponse {
 
-    @NotNull
     private int id;
-    @NotNull
     private String name;
-    @NotNull
     private String description;
-    @NotNull
     private Boolean available;
     private Integer request;
     private BookingDtoResponse lastBooking;

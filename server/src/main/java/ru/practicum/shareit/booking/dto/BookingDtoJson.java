@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,11 +12,8 @@ import java.time.LocalDateTime;
 public class BookingDtoJson {
 
     private int id;
-    @NotNull
     private int itemId;
-    @NotNull
     private LocalDateTime start;
-    @NotNull
     private LocalDateTime end;
 
     public BookingDtoJson(int itemId, LocalDateTime start, LocalDateTime end) {
